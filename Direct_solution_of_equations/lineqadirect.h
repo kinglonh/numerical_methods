@@ -12,6 +12,7 @@ using namespace matrix;
 namespace lineqa
 {
 	Mat Gauss(const Mat& A, const Mat& b);
+	Mat Gauss_MaxColumn(const Mat& A, const Mat& b);
 }
 
 #endif // !LINEQADIRECT

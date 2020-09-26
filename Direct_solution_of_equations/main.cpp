@@ -7,13 +7,13 @@ int main()
 	using namespace matrix;
 	using namespace lineqa;
 	using namespace std;
-	Mat A(2, 2), b(2,1);
-	double num1[4] = { 0.0003, 3, 1, 1 };
-	double num2[2] = { 2.0001, 1 };
+	Mat A(3, 3), b(3,1);
+	double num1[9] = { 1, 2, 1, 2, 2, 3, -1, -3 ,0 };
+	double num2[3] = { 0, 3, 2 };
 	A = num1;
 	b = num2;
 	Mat x;
-	x = Gauss(A, b);
+	x = Gauss_MaxColumn(A, b);
 	cout << x << endl;
 	return 0;
 }
