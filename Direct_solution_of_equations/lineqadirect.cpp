@@ -127,4 +127,154 @@ namespace lineqa
 			return x;
 		}
 	}
+
+
+	/************************************************************
+	结果采用LU分解的紧凑格式存储
+	The results is stored in compact format with LU decomposition
+	*************************************************************/
+	Mat Doolittle(const Mat& A)
+	{
+		if (A.row() == 0 || A.row() != A.column())
+		{
+			throw "Fail to solve equations: Parameter error.";
+			exit(1);
+		}
+		else
+		{
+			int n = A.row();
+			Mat G(n, n);
+			int i,j, k;
+			for (i = 0; i < n; i++)
+			{
+				for (j = i; j < n; j++)
+				{
+					double sum = 0;
+					for (k = 0; k < i; k++)
+					{
+						sum += (G[i][k] * G[k][j]);
+					}
+					G[i][j] = A[i][j] - sum;
+				}
+				for (j = i + 1; j < n; j++)
+				{
+					double sum = 0;
+					for (k = 0; k < i; k++)
+					{
+						sum += (G[j][k] * G[k][i]);
+					}
+					G[j][i] = (A[j][i] - sum) / G[i][i];
+				}
+			}
+			return G;
+		}
+	}
+
+	Mat Doolittle_Solve(const Mat& A, const Mat& b)
+	{
+		int n = A.row();
+		int eqa_num = b.column();
+		Mat G = Doolittle(A);
+		if (A.row() != b.row())
+		{
+			throw "Fail to solve equations: Parameter error.";
+			exit(1);
+		}
+		else
+		{
+			Mat x(n, eqa_num), y(n, eqa_num);
+			int i, j, k;
+			for (k = 0; k < eqa_num; k++)
+			{
+				for (i = 0; i < n; i++)
+				{
+					y[i][k] = b[i][k];
+					for (j = 0; j < i; j++)
+					{
+						y[i][k] -= (G[i][j] * y[j][k]);
+					}
+				}
+				for (i = n; i > 0; i--)
+				{
+					double s = y[i - 1][k];
+					for (j = i; j < n; j++)
+					{
+						s = s - G[i - 1][j] * x[j][k];
+					}
+					x[i - 1][k] = s / G[i - 1][i - 1];
+				}
+			}		
+			return x;
+		}
+	}
+
+	Mat Cholesky(const Mat& A)
+	{
+		if (A.row() == 0 || A.row() != A.column())
+		{
+			throw "Fail to solve equations: Parameter error.";
+			exit(1);
+		}
+		else
+		{
+			int n = A.row();
+			Mat G(n, n);
+			int i, j, k;
+			for (j = 0; j < n; j++)
+			{
+				double sum = 0;
+				for (k = 0; k < j; k++)
+					sum += (G[j][k] * G[j][k]);
+				G[j][j] = sqrt(A[j][j] - sum);
+				for (i = j + 1; i < n; i++)
+				{
+					double sum = 0;
+					for (k = 0; k < j; k++)
+						sum += (G[i][k] * G[j][k]);
+					G[i][j] = (A[i][j] - sum) / G[j][j];
+				}
+			}
+			return G;
+		}
+	}
+
+	Mat Cholesky_Solve(const Mat& A, const Mat& b)
+	{
+		int n = A.row();
+		int eqa_num = b.column();
+		Mat G = Cholesky(A), GT;
+		GT = G.T();
+		if (A.row() != b.row())
+		{
+			throw "Fail to solve equations: Parameter error.";
+			exit(1);
+		}
+		else
+		{
+			Mat x(n, eqa_num), y(n, eqa_num);
+			int i, j, k;
+			for (k = 0; k < eqa_num; k++)
+			{
+				for (i = 0; i < n; i++)
+				{
+					double sum = 0;
+					for (j = 0; j < i; j++)
+					{
+						sum += (G[i][j] * y[j][k]);
+					}
+					y[i][k] = (b[i][k] - sum) / G[i][i];
+				}
+				for (i = n; i > 0; i--)
+				{
+					double s = y[i - 1][k];
+					for (j = i; j < n; j++)
+					{
+						s = s - GT[i - 1][j] * x[j][k];
+					}
+					x[i - 1][k] = s / GT[i - 1][i - 1];
+				}
+			}
+			return x;
+		}
+	}
 }

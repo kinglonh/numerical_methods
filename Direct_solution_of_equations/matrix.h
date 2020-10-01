@@ -23,6 +23,8 @@ namespace matrix
 		~Mat();
 		int row() const { return row_num; }
 		int column() const { return column_num; }
+		bool symmetric() const;//Judge if it is a  symmetric matrix.ÅĞ¶Ï¾ØÕóÊÇ·ñ¶Ô³Æ
+		Mat T() const;//¾ØÕó×ªÖÃ Matrix transposition
 		Mat& operator=(const Mat& m);
 		Mat& operator=(double* num);
 		double* operator[](int n) const { return p[n]; }

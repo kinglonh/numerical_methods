@@ -73,6 +73,36 @@ namespace matrix
 		delete[] p;
 	}
 
+	bool Mat::symmetric() const
+	{
+		int i, j;
+		if (row_num != column_num)
+			return false;
+		for (i = 0; i < row_num; i++)
+		{
+			for (j = i + 1; j < row_num; j++)
+			{
+				if (p[i][j] != p[j][i])
+					return false;
+			}
+		}
+		return true;
+	}
+
+	Mat Mat::T() const
+	{
+		Mat TA(column_num, row_num);
+		int i, j;
+		for (i = 0; i < row_num; i++)
+		{
+			for (j = 0; j < column_num; j++)
+			{
+				TA[j][i] = p[i][j];
+			}
+		}
+		return TA;
+	}
+
 	Mat& Mat::operator=(const Mat& m)
 	{
 		if (this == &m)

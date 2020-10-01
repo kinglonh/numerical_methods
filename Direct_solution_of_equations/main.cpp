@@ -7,13 +7,13 @@ int main()
 	using namespace matrix;
 	using namespace lineqa;
 	using namespace std;
-	Mat A(3, 3), b(3,1);
-	double num1[9] = { 1, 2, 1, 2, 2, 3, -1, -3 ,0 };
-	double num2[3] = { 0, 3, 2 };
+	Mat A(4, 4), b(4,2);
+	double num1[16] = { 9, 18, 9, -27, 18, 45, 0, -45, 9, 0, 126, 9, -27, -45, 9, 135 };
+	double num2[8] = { 1,1, 2,2, 16,3, 8,4 };
 	A = num1;
 	b = num2;
 	Mat x;
-	x = Gauss_MaxColumn(A, b);
+	x = Cholesky_Solve(A, b);
 	cout << x << endl;
 	return 0;
 }

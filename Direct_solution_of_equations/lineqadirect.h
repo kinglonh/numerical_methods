@@ -13,6 +13,10 @@ namespace lineqa
 {
 	Mat Gauss(const Mat& A, const Mat& b);
 	Mat Gauss_MaxColumn(const Mat& A, const Mat& b);
+	Mat Doolittle(const Mat& A);
+	Mat Doolittle_Solve(const Mat& A, const Mat& b);
+	Mat Cholesky(const Mat& A);
+	Mat Cholesky_Solve(const Mat& A, const Mat& b);
 }
 
 #endif // !LINEQADIRECT
