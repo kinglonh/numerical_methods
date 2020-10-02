@@ -17,6 +17,8 @@ namespace lineqa
 	Mat Doolittle_Solve(const Mat& A, const Mat& b);
 	Mat Cholesky(const Mat& A);
 	Mat Cholesky_Solve(const Mat& A, const Mat& b);
+	Mat LDL(const Mat& A);
+	Mat LDL_Solve(const Mat& A, const Mat& b);
 }
 
 #endif // !LINEQADIRECT

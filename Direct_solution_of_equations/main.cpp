@@ -13,7 +13,7 @@ int main()
 	A = num1;
 	b = num2;
 	Mat x;
-	x = Cholesky_Solve(A, b);
+	x = LDL_Solve(A, b);
 	cout << x << endl;
 	return 0;
 }
