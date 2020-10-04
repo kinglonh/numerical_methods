@@ -27,9 +27,16 @@ namespace matrix
 		Mat T() const;//¾ØÕó×ªÖÃ Matrix transposition
 		Mat& operator=(const Mat& m);
 		Mat& operator=(double* num);
+		Mat operator+(const Mat& m) const;
+		Mat operator-(const Mat& m) const;
+		Mat operator*(const Mat& m) const;
+		Mat operator*(const double& m) const;
 		double* operator[](int n) const { return p[n]; }
 		friend std::ostream& operator<<(std::ostream& os, const Mat& m);
+		friend Mat operator*(const double& t, const Mat& m) { return m * t; }
 	};
+
+	Mat I(int n);//µ¥Î»¾ØÕó Identity Matrix
 }
 
 

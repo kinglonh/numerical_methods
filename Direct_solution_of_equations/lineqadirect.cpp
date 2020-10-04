@@ -2,6 +2,7 @@
 //Author: Chen Jinlong
 //Time: 13:47 2020/9/26
 #include <iostream>
+#include <vector>
 #include <cmath>
 #include "lineqadirect.h"
 
@@ -343,6 +344,258 @@ namespace lineqa
 					}
 					x[i - 1][k] = y[i - 1][k] / G[i - 1][i - 1] - sum;
 				}
+			}
+			return x;
+		}
+	}
+
+	/************************************
+	G上三角部分存储R矩阵的上三角部分
+	G的主对角线及下三角部分存储Householder变换矩阵中间值w
+	d存储R矩阵的主对角线部分
+	alpha存储Householder变换的每一步的数量sigma(sigma-akk)
+	************************************/
+	void QR_Householder(const Mat& A, Mat& G, Mat& d, Mat& alpha)
+	{
+		if (A.row() == 0 || A.column() == 0 || A.row() < A.column())
+		{
+			throw "Fail to solve equations: Parameter error.";
+			exit(1);
+		}
+		else
+		{
+			int m = A.row();
+			int n = A.column();
+			G = A;
+			d = Mat(n, 1);
+			alpha = Mat(n, 1);
+			int i, j, k;
+			double sigma;
+			for (k = 0; k < n - 1; k++)
+			{
+				double sum = 0;
+				for (i = k; i < m; i++)
+					sum += (G[i][k] * G[i][k]);
+				sigma = sqrt(sum);
+				//if (G[k][k] >= 0)
+				//	sigma = -sigma;
+				d[k][0] = sigma;
+				alpha[k][0] = sigma * (sigma - G[k][k]);
+				G[k][k] = G[k][k] - sigma;			
+				for (j = k + 1; j < n; j++)
+				{
+					double beta;
+					double sum = 0;
+					for (i = k + 1; i < m; i++)
+						sum += G[i][k] * G[i][j];
+					beta = (G[k][k] * G[k][j] + sum) / alpha[k][0];
+					G[k][j] -= (beta * G[k][k]);
+					for (i = k + 1; i < m; i++)
+						G[i][j] -= (beta * G[i][k]);
+				}
+			}
+			if (m == n)
+				d[n - 1][0] = G[n - 1][n - 1];
+			else
+			{
+				double sum = 0;
+				for (i = n - 1; i < m; i++)
+					sum += (G[i][n - 1] * G[i][n - 1]);
+				sigma = sqrt(sum);
+				//if (G[n - 1][n - 1] >= 0)
+				//	sigma = -sigma;
+				d[n - 1][0] = sigma;
+				alpha[n - 1][0] = sigma * (sigma - G[n - 1][n - 1]);
+				G[n - 1][n - 1] = G[n - 1][n - 1] - sigma;
+			}
+		}		
+	}
+
+	void QR_Householder_Show(const Mat& A)
+	{
+		using std::cout;
+		using std::endl;
+		Mat G, d, alpha;
+		QR_Householder(A, G, d, alpha);
+		int m = G.row();
+		int n = G.column();
+		Mat H(m, m);
+		Mat R(m, n);
+		int i, j, k;
+		Mat w(m, 1);
+		for (j = 0; j < m; j++)
+			w[j][0] = G[j][0];
+		H = I(m) - 1 / alpha[0][0] * w * w.T();
+		for (i = 1; i < n - 1; i++)
+		{
+			Mat w(m - i, 1);
+			Mat Hi(m - i, m - i);
+			for (j = i; j < m; j++)
+				w[j - i][0] = G[j][i];
+			Hi = I(m - i) - 1 / alpha[i][0] * w * w.T();
+			Mat Ht = I(m);
+			for (j = i; j < m; j++)
+				for (k = i; k < n; k++)
+					Ht[j][k] = Hi[j - i][k - i];
+			H = Ht * H;
+		}
+		if (m > n)
+		{
+			Mat w(m - n + 1, 1);
+			Mat Hn(m - n + 1, m - n + 1);
+			for (j = n - 1; j < m; j++)
+				w[j - n + 1][0] = G[j][n - 1];
+			Hn = I(m - n + 1) - 1 / alpha[n - 1][0] * w * w.T();
+			Mat Ht = I(m);
+			for (j = n - 1; j < m; j++)
+				for (k = n - 1; k < n; k++)
+					Ht[j][k] = Hn[j - n + 1][k - n + 1];
+			H = Ht * H;
+		}
+		Mat Q = H.T();
+		for (i = 0; i < n; i++)
+			R[i][i] = d[i][0];
+		for (i = 0; i < n; i++)
+			for (j = i + 1; j < m; j++)
+				R[i][j] = G[i][j];
+		cout << endl;
+		cout << "Q=" << endl;
+		cout << Q;
+		cout << "R=" << endl;
+		cout << R;
+	}
+
+	void QR_Householder_Show(const Mat& G, const Mat& d, const Mat& alpha)
+	{
+		using std::cout;
+		using std::endl;
+		if (G.row() < G.column() || (G.column() != d.row()) || (G.column() != alpha.row()))
+		{
+			throw "Parameter error.";
+			exit(1);
+		}
+		else
+		{
+			int m = G.row();
+			int n = G.column();
+			Mat H(m, m);
+			Mat R(m, n);
+			int i, j, k;
+			Mat w(m, 1);
+			for (j = 0; j < m; j++)
+				w[j][0] = G[j][0];
+			H = I(m) - 1 / alpha[0][0] * w * w.T();
+			for (i = 1; i < n - 1; i++)
+			{
+				Mat w(m - i, 1);
+				Mat Hi(m - i, m - i);
+				for (j = i; j < m; j++)
+					w[j - i][0] = G[j][i];
+				Hi = I(m - i) - 1 / alpha[i][0] * w * w.T();
+				Mat Ht = I(m);
+				for (j = i; j < m; j++)
+					for (k = i; k < n; k++)
+						Ht[j][k] = Hi[j - i][k - i];
+				H = Ht * H;
+			}
+			if (m > n)
+			{
+				Mat w(m - n + 1, 1);
+				Mat Hn(m - n + 1, m - n + 1);
+				for (j = n - 1; j < m; j++)
+					w[j - n + 1][0] = G[j][n - 1];
+				Hn = I(m - n + 1) - 1 / alpha[n - 1][0] * w * w.T();
+				Mat Ht = I(m);
+				for (j = n - 1; j < m; j++)
+					for (k = n - 1; k < n; k++)
+						Ht[j][k] = Hn[j - n + 1][k - n + 1];
+				H = Ht * H;
+			}
+			Mat Q = H.T();
+			for (i = 0; i < n; i++)
+				R[i][i] = d[i][0];
+			for (i = 0; i < n; i++)
+				for (j = i + 1; j < m; j++)
+					R[i][j] = G[i][j];
+			cout << endl;
+			cout << "Q=" << endl;
+			cout << Q;
+			cout << "R=" << endl;
+			cout << R;
+		}
+	}
+
+	Mat QR_Householder_Solve(const Mat& A, const Mat& b)
+	{
+		if (A.row() != b.row() || A.row() == 0 || A.column() == 0 || A.row() < A.column() || b.column() != 1)
+		{
+			throw "Fail to solve equations: Parameter error.";
+			exit(1);
+		}
+		else
+		{
+			Mat G, d, alpha;
+			int m = A.row();
+			int n = A.column();
+			G = Mat(A, b);
+			d = Mat(n, 1);
+			alpha = Mat(n, 1);
+			int i, j, k;
+			double sigma;
+			for (k = 0; k < n - 1; k++)
+			{
+				double sum = 0;
+				for (i = k; i < m; i++)
+					sum += (G[i][k] * G[i][k]);
+				sigma = sqrt(sum);
+				if (G[k][k] >= 0)
+					sigma = -sigma;
+				d[k][0] = sigma;
+				alpha[k][0] = sigma * (sigma - G[k][k]);
+				G[k][k] = G[k][k] - sigma;
+				for (j = k + 1; j < n + 1; j++)
+				{
+					double beta;
+					double sum = 0;
+					for (i = k + 1; i < m; i++)
+						sum += G[i][k] * G[i][j];
+					beta = (G[k][k] * G[k][j] + sum) / alpha[k][0];
+					G[k][j] -= (beta * G[k][k]);
+					for (i = k + 1; i < m; i++)
+						G[i][j] -= (beta * G[i][k]);
+				}
+			}
+			if (m == n)
+				d[n - 1][0] = G[n - 1][n - 1];
+			else
+			{
+				double sum = 0;
+				for (i = n - 1; i < m; i++)
+					sum += (G[i][n - 1] * G[i][n - 1]);
+				sigma = sqrt(sum);
+				if (G[n - 1][n - 1] >= 0)
+					sigma = -sigma;
+				d[n - 1][0] = sigma;
+				alpha[n - 1][0] = sigma * (sigma - G[n - 1][n - 1]);
+				G[n - 1][n - 1] = G[n - 1][n - 1] - sigma;
+				double beta;
+				sum = 0;
+				for (i = n; i < m; i++)
+					sum += G[i][n - 1] * G[i][n];
+				beta = (G[n - 1][n - 1] * G[n - 1][n] + sum) / alpha[n - 1][0];
+				G[n - 1][n] -= (beta * G[n - 1][n - 1]);
+				for (i = n; i < m; i++)
+					G[i][n] -= (beta * G[i][n - 1]);
+			}
+			Mat x(n, 1);
+			for (k = n; k > 0; k--)
+			{
+				double sum = 0;
+				for (j = k; j < n; j++)
+				{
+					sum += (G[k - 1][j] * x[j][0]);
+				}
+				x[k - 1][0] = (G[k - 1][n] - sum) / d[k - 1][0];
 			}
 			return x;
 		}

@@ -19,6 +19,10 @@ namespace lineqa
 	Mat Cholesky_Solve(const Mat& A, const Mat& b);
 	Mat LDL(const Mat& A);
 	Mat LDL_Solve(const Mat& A, const Mat& b);
+	void QR_Householder(const Mat& A, Mat& G, Mat& d, Mat& alpha);
+	void QR_Householder_Show(const Mat& A);
+	void QR_Householder_Show(const Mat& G, const Mat& d, const Mat& alpha);
+	Mat QR_Householder_Solve(const Mat& A, const Mat& b);
 }
 
 #endif // !LINEQADIRECT
