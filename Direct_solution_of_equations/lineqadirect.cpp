@@ -377,8 +377,8 @@ namespace lineqa
 				for (i = k; i < m; i++)
 					sum += (G[i][k] * G[i][k]);
 				sigma = sqrt(sum);
-				//if (G[k][k] >= 0)
-				//	sigma = -sigma;
+				if (G[k][k] >= 0)
+					sigma = -sigma;
 				d[k][0] = sigma;
 				alpha[k][0] = sigma * (sigma - G[k][k]);
 				G[k][k] = G[k][k] - sigma;			
@@ -402,8 +402,8 @@ namespace lineqa
 				for (i = n - 1; i < m; i++)
 					sum += (G[i][n - 1] * G[i][n - 1]);
 				sigma = sqrt(sum);
-				//if (G[n - 1][n - 1] >= 0)
-				//	sigma = -sigma;
+				if (G[n - 1][n - 1] >= 0)
+					sigma = -sigma;
 				d[n - 1][0] = sigma;
 				alpha[n - 1][0] = sigma * (sigma - G[n - 1][n - 1]);
 				G[n - 1][n - 1] = G[n - 1][n - 1] - sigma;
