@@ -140,10 +140,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="lineqadirect.h" />
+    <ClInclude Include="lineqaiterative.h" />
     <ClInclude Include="matrix.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lineqadirect.cpp" />
+    <ClCompile Include="lineqaiterative.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="matrix.cpp" />
   </ItemGroup>

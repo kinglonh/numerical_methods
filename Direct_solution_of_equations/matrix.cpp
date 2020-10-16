@@ -103,6 +103,35 @@ namespace matrix
 		return TA;
 	}
 
+	double Mat::norm_inf() const
+	{
+		double max;
+		int i, j;
+		if (column_num == 1)
+		{
+			max = fabs(p[0][0]);
+			for (i = 1; i < row_num; i++)
+			{
+				double tmp = fabs(p[i][0]);
+				if (max < tmp)
+					max = tmp;
+			}
+		}
+		else
+		{
+			max = 0;
+			for (i = 0; i < row_num; i++)
+			{
+				double sum = 0;
+				for (j = 0; j < column_num; j++)
+					sum += fabs(p[i][j]);
+				if (max < sum)
+					max = sum;
+			}
+		}
+		return max;
+	}
+
 	Mat& Mat::operator=(const Mat& m)
 	{
 		if (this == &m)
