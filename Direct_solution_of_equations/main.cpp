@@ -14,7 +14,7 @@ int main()
 	A = num1;
 	b = num2;
 	x = num3;
-	Jacobi(A, b, 0.0001, x);
+	SOR(A, b, 1.5, 0.0001, x);
 	cout << x << endl;
 	return 0;
 }
