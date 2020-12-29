@@ -8,13 +8,13 @@ int main()
 	using namespace lineqa;
 	using namespace std;
 	Mat A(3, 3), b(3,1), x(3, 1);
-	double num1[9] = { 10, -1, -2, -1, 10, -2, -1, -1, 5 };
-	double num2[3] = { 72, 83, 42 };
+	double num1[9] = { 2,0,1,0,1,0,1,0,2 };
+	double num2[3] = { 3,1,3 };
 	double num3[3] = { 0, 0, 0 };
 	A = num1;
 	b = num2;
 	x = num3;
-	SOR(A, b, 1.5, 0.0001, x);
+	Conjugate_Gradient(A, b, 0.000001, x);
 	cout << x << endl;
 	return 0;
 }

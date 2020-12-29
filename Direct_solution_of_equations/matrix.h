@@ -25,7 +25,7 @@ namespace matrix
 		int column() const { return column_num; }
 		bool symmetric() const;//Judge if it is a  symmetric matrix.ÅĞ¶Ï¾ØÕóÊÇ·ñ¶Ô³Æ
 		Mat T() const;//¾ØÕó×ªÖÃ Matrix transposition
-		double norm_inf() const;
+		double norm_inf() const;//ÎŞÇî·¶Êı
 		Mat& operator=(const Mat& m);
 		Mat& operator=(double* num);
 		Mat operator+(const Mat& m) const;

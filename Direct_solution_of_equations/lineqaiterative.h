@@ -14,5 +14,6 @@ namespace lineqa
 	void Jacobi(const Mat& A, const Mat& b, const double& error, Mat& x);
 	void GaussSeidel(const Mat& A, const Mat& b, const double& error, Mat& x);
 	void SOR(const Mat& A, const Mat& b, const double& omega, const double& error, Mat& x);
+	void Conjugate_Gradient(const Mat& A, const Mat& b, const double& error, Mat& x);
 }
 #endif // !LINEQAITERATIVE

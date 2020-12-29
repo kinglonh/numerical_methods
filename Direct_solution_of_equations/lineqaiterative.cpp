@@ -120,4 +120,36 @@ namespace lineqa
 			}
 		}
 	}
+
+	void Conjugate_Gradient(const Mat& A, const Mat& b, const double& error, Mat& x)
+	{
+		if (A.row() == 0 || A.row() != A.column() || b.column() != 1 || x.column() != 1 || A.row() != b.row() || A.row() != x.row())
+		{
+			throw "Fail to solve equations: Parameter error.";
+			exit(1);
+		}
+		else
+		{
+			int n = A.row();
+			Mat r(n, 1);
+			Mat r2(n, 1);
+			Mat d(n, 1);
+			r = b - A * x;
+			d = r;
+			int k;
+			double alpha;
+			double beta;
+			for (k = 0; k < n; k++)
+			{
+				alpha = (r.T() * r)[0][0] / (d.T() * A * d)[0][0];
+				x = x + alpha * d;
+				r2 = b - A * x;
+				if ((r2.norm_inf() < error) || (k + 1) == n)
+					break;
+				beta = (r2.T() * r2)[0][0] / (r.T() * A * r)[0][0];
+				d = r2 + beta * d;
+				r = r2;
+			}
+		}
+	}
 }
