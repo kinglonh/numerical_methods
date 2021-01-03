@@ -600,4 +600,79 @@ namespace lineqa
 			return x;
 		}
 	}
+
+	Mat Tridiagonal(const Mat& A, const Mat& B, const Mat& C, const Mat& D)
+	{
+		int n = B.column();
+		if (A.row() != 1 || B.row() != 1 || C.row() != 1 || D.column() != 1 || A.column() != n - 1 || C.column() != n - 1 || D.row() != n)
+		{
+			throw "Fail to solve equations: Parameter error.";
+			exit(1);
+		}
+		else
+		{
+			Mat Z(1, 1);//Z=0，给A和C补位用
+			Mat AA(Z, A);
+			Mat CC(C, Z);
+			Mat L(1, n);
+			Mat U(1, n);
+			Mat y(n, 1);
+			Mat x(n, 1);
+			U[0][0] = B[0][0];
+			y[0][0] = D[0][0];
+			int i;
+			for (i = 1; i < n; i++)
+			{
+				L[0][i] = AA[0][i] / U[0][i - 1];
+				U[0][i] = B[0][i] - L[0][i] * CC[0][i - 1];
+				y[i][0] = D[i][0] - L[0][i] * y[i - 1][0];
+			}
+			x[n - 1][0] = y[n - 1][0] / U[0][n - 1];
+			for (i = n - 2; i >= 0; i--)
+			{
+				x[i][0] = (y[i][0] - C[0][i] * x[i + 1][0]) / U[0][i];
+			}
+			return x;
+		}
+	}
+
+	Mat Tridiagonal_Circle(const Mat& A, const Mat& B, const Mat& C, const Mat& D)
+	{
+		int n = B.column();
+		if (A.row() != 1 || B.row() != 1 || C.row() != 1 || D.column() != 1 || A.column() != n || C.column() != n || D.row() != n)
+		{
+			throw "Fail to solve equations: Parameter error.";
+			exit(1);
+		}
+		else
+		{
+			Mat L(1, n);
+			Mat U(1, n);
+			Mat y(n, 1);
+			Mat x(n, 1);
+			U[0][0] = B[0][0];
+			y[0][0] = D[0][0];
+			L[0][0] = A[0][1] / U[0][0];
+			int i;
+			for (i = 1; i < n - 1; i++)
+			{
+				U[0][i] = B[0][i] - L[0][i - 1] * C[0][i - 1];
+				L[0][i] = A[0][i + 1] / U[0][i];
+				y[i][0] = D[i][0] - L[0][i - 1] * y[i - 1][0];
+			}
+			L[0][n - 1] = C[0][n - 1] / U[0][0];
+			U[0][n - 1] = B[0][n - 1] - A[0][0] * L[0][n - 1] - L[0][n - 2] * C[0][n - 2];
+			y[n - 1][0] = D[n - 1][0] - L[0][n - 1] * y[0][0] - L[0][n - 2] * y[n - 2][0];
+			x[n - 1][0] = y[n - 1][0] / U[0][n - 1];
+			for (i = n - 2; i > 0; i--)
+			{
+				x[i][0] = (y[i][0] - C[0][i] * x[i + 1][0]) / U[0][i];
+			}
+			x[0][0] = (y[0][0] - C[0][1] * x[1][0] - A[0][1] * x[n - 1][0]) / U[0][0];
+			std::cout << U << std::endl;
+			std::cout << L << std::endl;
+			std::cout << y << std::endl;
+			return x;
+		}
+	}
 }
