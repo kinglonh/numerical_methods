@@ -45,7 +45,7 @@ namespace function
 			if (bond == 1)
 			{
 				M[0][0] = left_bond;
-				M[0][n] = right_bond;
+				M[n][0] = right_bond;
 				Mat A(1, n - 2);
 				Mat B(1, n - 1);
 				Mat C(1, n - 2);
@@ -67,9 +67,55 @@ namespace function
 				{
 					D[i][0] = d[i + 1][0];
 				}
-				D[n - 2][0] = d[n - 1][0] - lamda[0][n - 2] * M[0][n];
+				D[n - 2][0] = d[n - 1][0] - lamda[0][n - 2] * M[n][0];
 				Mat MM = Tridiagonal(A, B, C, D);
 				for (i = 1; i < n; i++)
+				{
+					M[i][0] = MM[i - 1][0];
+				}
+			}
+			if (bond == 2)
+			{
+				d[0][0] = 6 / h[0][0] * ((y[0][1] - y[0][0]) / h[0][0] - left_bond);
+				d[n][0] = 6 / h[0][n - 1] * (right_bond - (y[0][n] - y[0][n - 1]) / h[0][n - 1]);
+				Mat A(1, n);
+				Mat B(1, n + 1);
+				Mat C(1, n);
+				for (i = 0; i < n - 1; i++)
+				{
+					A[0][i] = miu[0][i];
+				}
+				A[0][n - 1] = 1;
+				for (i = 0; i < n + 1; i++)
+				{
+					B[0][i] = 2;
+				}
+				C[0][0] = 1;
+				for (i = 1; i < n; i++)
+				{
+					C[0][i] = lamda[0][i - 1];
+				}
+				M = Tridiagonal(A, B, C, d);
+			}
+			if (bond == 3)
+			{
+				miu[0][n - 1] = h[0][n - 1] / (h[0][n - 1] + h[0][0]);
+				lamda[0][n - 1] = 1 - miu[0][n - 1];
+				d[n][0] = 6 / (h[0][n - 1] + h[0][0]) * ((y[0][1] - y[0][n]) / h[0][0] - (y[0][n] - y[0][n - 1]) / h[0][n - 1]);
+				Mat B(1, n);
+				Mat D(n, 1);
+				Mat MM(n, 1);
+				for (i = 0; i < n; i++)
+				{
+					B[0][i] = 2;
+				}
+				for (i = 0; i < n; i++)
+				{
+					D[i][0] = d[i + 1][0];
+				}
+				MM = Tridiagonal_Circle(miu, B, lamda, D);
+				M[0][0] = MM[n - 1][0];
+				for (i = 1; i < n + 1; i++)
 				{
 					M[i][0] = MM[i - 1][0];
 				}
@@ -85,11 +131,6 @@ namespace function
 				S[i][3] += ((y[0][i] - h[0][i] * h[0][i] * M[i][0] / 6) * x[0][i + 1] - (y[0][i + 1] - h[0][i] * h[0][i] * M[i + 1][0] / 6) * x[0][i]);
 				S[i][3] /= h[0][i];
 			}
-			std::cout << h << std::endl;
-			std::cout << miu << std::endl;
-			std::cout << lamda << std::endl;
-			std::cout << d << std::endl;
-			std::cout << M << std::endl;
 			return S;
 		}
 	}
