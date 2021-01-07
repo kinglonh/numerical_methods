@@ -146,7 +146,7 @@ namespace lineqa
 				r2 = b - A * x;
 				if ((r2.norm_inf() < error) || (k + 1) == n)
 					break;
-				beta = (r2.T() * r2)[0][0] / (r.T() * A * r)[0][0];
+				beta = -(r2.T() * A * d)[0][0] / (d.T() * A * d)[0][0];
 				d = r2 + beta * d;
 				r = r2;
 			}
