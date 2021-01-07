@@ -139,12 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="funcintegral.h" />
     <ClInclude Include="funcinterpolation.h" />
     <ClInclude Include="lineqadirect.h" />
     <ClInclude Include="lineqaiterative.h" />
     <ClInclude Include="matrix.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="funcintegral.cpp" />
     <ClCompile Include="funcinterpolation.cpp" />
     <ClCompile Include="lineqadirect.cpp" />
     <ClCompile Include="lineqaiterative.cpp" />

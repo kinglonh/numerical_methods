@@ -27,6 +27,9 @@
     <ClInclude Include="funcinterpolation.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="funcintegral.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="matrix.cpp">
@@ -42,6 +45,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="funcinterpolation.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="funcintegral.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
